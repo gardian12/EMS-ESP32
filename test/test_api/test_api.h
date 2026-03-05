@@ -1,4 +1,6 @@
 // ---------- START - CUT HERE ----------
+#ifndef TEST_API_H
+#define TEST_API_H
 
 void test_1() {
     auto expected_response =
@@ -586,3 +588,5 @@ void run_tests() {
 }
 
 // ---------- END - CUT HERE ----------
+
+#endif
