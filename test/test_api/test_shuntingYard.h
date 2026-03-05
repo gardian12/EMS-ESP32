@@ -1,3 +1,5 @@
+#ifndef TEST_SHUNTINGYARD_H
+#define TEST_SHUNTINGYARD_H
 
 #include <Arduino.h>
 #include <unity.h>
@@ -134,3 +136,5 @@ void run_shuntingYard_tests() {
     RUN_TEST(shuntingYard_test24);
     RUN_TEST(shuntingYard_test25);
 }
+
+#endif // TEST_SHUNTINGYARD_H

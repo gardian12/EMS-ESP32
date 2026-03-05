@@ -23,4 +23,12 @@ pio run
 
 
 
+how to exclude WiFiServer test from test run?
+---------------------------------------------
+
+# Exclude tests matching a pattern (case-insensitive)
+Verbosity level can be increased via `-v, -vv, or -vvv` option
+
+source .venv/bin/activate && pio test -e native-test --ignore "*WiFiServer*" -vvv
+
 
