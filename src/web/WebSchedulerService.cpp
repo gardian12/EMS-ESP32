@@ -352,7 +352,7 @@ bool WebSchedulerService::command(const char * name, const std::string & command
     // parse json
     JsonDocument doc;
     if (deserializeJson(doc, cmd) == DeserializationError::Ok) {
-        HTTPClient  http;
+        HTTPClient  * http = new HTTPClient;
         std::string url = doc["url"] | "";
         // for a GET with parameters replace commands with values
         // don't search the complete url, it may contain a devicename in path
@@ -363,10 +363,10 @@ bool WebSchedulerService::command(const char * name, const std::string & command
             commands(s, false);
             url.replace(q + 1, l, s);
         }
-        if (http.begin(url.c_str())) {
+        if (http->begin(url.c_str())) {
             // add any given headers
             for (JsonPair p : doc["header"].as<JsonObject>()) {
-                http.addHeader(p.key().c_str(), p.value().as<String>().c_str());
+                http->addHeader(p.key().c_str(), p.value().as<String>().c_str());
             }
             std::string value  = doc["value"] | data.c_str(); // extract value if its in the command, or take the data
             std::string method = doc["method"] | "GET";       // default GET
@@ -376,14 +376,15 @@ bool WebSchedulerService::command(const char * name, const std::string & command
             int httpResult = 0;
             if (value.length() || method == "post") { // we have all lowercase
                 if (value.find_first_of('{') != std::string::npos) {
-                    http.addHeader(asyncsrv::T_Content_Type, asyncsrv::T_application_json, false); // auto-set to JSON
+                    http->addHeader(asyncsrv::T_Content_Type, asyncsrv::T_application_json, false); // auto-set to JSON
                 }
-                httpResult = http.POST(value.c_str());
+                httpResult = http->POST(value.c_str());
             } else {
-                httpResult = http.GET(); // normal GET
+                httpResult = http->GET(); // normal GET
             }
 
-            http.end();
+            http->end();
+            delete http;
 
             // check HTTP return code
             if (httpResult != 200) {

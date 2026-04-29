@@ -186,7 +186,8 @@ const nl: Translation = {
   BUFFER_SIZE: 'Max buffer grootte',
   COMPACT: 'Compact',
   DOWNLOAD_SETTINGS_TEXT: 'Maak een back-up van uw configuratie en instellingen',
-  DOWNLOAD_SETTINGS_TEXT2: 'Exporteer alle data',
+  DOWNLOAD_SETTINGS_TEXT2: 'Exporteer alle waarden',
+  DOWNLOAD_SYSTEM_BACKUP: 'Systeem Backup',
   UPLOAD_TEXT: 'Upload een nieuw firmwarebestand (.bin) of een back-upbestand (.json)',
   UPLOAD_DROP_TEXT: 'Sleep en firmware .bin bestand hierheen of klik hier',
   ERROR: 'Onverwachte fout, probeer opnieuw',
@@ -349,6 +350,7 @@ const nl: Translation = {
   NO_DATA_1: 'Er zijn nog geen favoriete EMS-entiteiten gevonden. Gebruik de',
   NO_DATA_2: 'module om ze te markeren.',
   NO_DATA_3: 'Om alle beschikbare entiteiten te zien, ga naar',
+  NO_GPIO: 'Er is geen beschikbare GPIO gevonden',
   THIS_VERSION: 'Deze Versie',
   PLATFORM: 'Platform',
   RELEASE_TYPE: 'Release Typ',
@@ -357,7 +359,13 @@ const nl: Translation = {
   FIRMWARE_VERSION_INFO: 'Informatie over firmwareversie',
   NO_DATA: 'Geen data',
   USER_PROFILE: 'Gebruikersprofiel',
-  STORED_VERSIONS: 'Opgeslagen versies'
+  STORED_VERSIONS: 'Opgeslagen versies',
+  ONLINE_HELP: 'online help',
+  UPGRADE_IMPORTANT_MESSAGES: 'Upgrade Belangrijke Berichten',
+  UPGRADE_IMPORTANT_MESSAGES_1: 'Deze upgrade vereist een fabrieksinstelling. Zorg ervoor dat u eerst een Systeem Backup download voordat u doorgaat, en upload deze file na de installatie van de nieuwe versie.',
+  UPGRADE_IMPORTANT_MESSAGES_2: 'U updatet naar een nieuwe grote versie. Zorg ervoor dat u de ChangeLog hebt gelezen voor alle brekende wijzigingen.',
+  WARNING_SYSTEM_BACKUP: 'Dit zal een back-up van uw volledige systeemconfiguratie en instellingen maken. Alle wachtwoorden zijn leesbaar in het back-upbestand. Wees voorzichtig bij delen! Wilt u doorgaan?'
+
 };
 
 export default nl;

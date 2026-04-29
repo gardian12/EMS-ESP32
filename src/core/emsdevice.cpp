@@ -104,9 +104,9 @@ const char * EMSdevice::uom_to_string(uint8_t uom) {
     }
 }
 
-const char * EMSdevice::brand_to_char() {
+std::string EMSdevice::brand_to_char() {
     if (!custom_brand().empty()) {
-        return custom_brand().c_str();
+        return custom_brand();
     }
     switch (brand_) {
     case EMSdevice::Brand::BOSCH:
@@ -331,15 +331,15 @@ uint8_t EMSdevice::decode_brand(uint8_t value) {
 std::string EMSdevice::to_string() {
     // for devices that haven't been lookup yet, don't show all details
     if (product_id_ == 0) {
-        return std::string(name()) + " (DeviceID:" + Helpers::hextoa(device_id_) + ")";
+        return name() + " (DeviceID:" + Helpers::hextoa(device_id_) + ")";
     }
 
     if (brand_ == Brand::NO_BRAND && custom_brand().empty()) {
-        return std::string(name()) + " (DeviceID:" + Helpers::hextoa(device_id_) + ", ProductID:" + Helpers::itoa(product_id_) + ", Version:" + version_ + ")";
+        return name() + " (DeviceID:" + Helpers::hextoa(device_id_) + ", ProductID:" + Helpers::itoa(product_id_) + ", Version:" + version_ + ")";
     }
 
-    return std::string(brand_to_char()) + " " + name() + " (DeviceID:" + Helpers::hextoa(device_id_) + ", ProductID:" + Helpers::itoa(product_id_)
-           + ", Version:" + version_ + ")";
+    return brand_to_char() + " " + name() + " (DeviceID:" + Helpers::hextoa(device_id_) + ", ProductID:" + Helpers::itoa(product_id_) + ", Version:" + version_
+           + ")";
 }
 
 // returns string of EMS device version and productID
@@ -368,7 +368,7 @@ void EMSdevice::fetch_values() {
 
     for (const auto & tf : telegram_functions_) {
         if (tf.fetch_) {
-            read_command(tf.telegram_type_id_);
+            read_command(tf.telegram_type_id_, 0, tf.length_);
         }
     }
 }
@@ -387,10 +387,10 @@ void EMSdevice::toggle_fetch(uint16_t telegram_id, bool toggle) {
 }
 
 // get status of automatic fetch for a telegramID
-bool EMSdevice::is_fetch(uint16_t telegram_id) const {
+bool EMSdevice::is_fetch(uint16_t telegram_id, uint8_t len) const {
     for (const auto & tf : telegram_functions_) {
         if (tf.telegram_type_id_ == telegram_id) {
-            return tf.fetch_;
+            return tf.fetch_ && tf.length_ >= len;
         }
     }
     return false;
@@ -547,8 +547,8 @@ void EMSdevice::show_mqtt_handlers(uuid::console::Shell & shell) const {
 }
 
 // register a callback function for a specific telegram type
-void EMSdevice::register_telegram_type(const uint16_t telegram_type_id, const char * telegram_type_name, bool fetch, const process_function_p f) {
-    telegram_functions_.emplace_back(telegram_type_id, telegram_type_name, fetch, false, f);
+void EMSdevice::register_telegram_type(const uint16_t telegram_type_id, const char * telegram_type_name, bool fetch, const process_function_p f, uint8_t length) {
+    telegram_functions_.emplace_back(telegram_type_id, telegram_type_name, fetch, false, length, f);
 }
 
 // add to device value library, also know now as a "device entity"
@@ -2160,7 +2160,7 @@ void EMSdevice::mqtt_ha_entity_config_create() {
         if (!dv.has_state(DeviceValueState::DV_HA_CONFIG_CREATED) && dv.has_state(DeviceValueState::DV_ACTIVE)
             && !dv.has_state(DeviceValueState::DV_API_MQTT_EXCLUDE)) {
             // create_device_config is only done once for the EMS device. It can added to any entity, so we take the first
-            if (Mqtt::publish_ha_sensor_config_dv(dv, name().c_str(), std::string(brand_to_char()).c_str(), to_string_version().c_str(), false, create_device_config)) {
+            if (Mqtt::publish_ha_sensor_config_dv(dv, name().c_str(), brand_to_char().c_str(), to_string_version().c_str(), false, create_device_config)) {
                 dv.add_state(DeviceValueState::DV_HA_CONFIG_CREATED);
                 create_device_config = false; // only create the main config once
                 count++;

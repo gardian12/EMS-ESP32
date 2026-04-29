@@ -56,6 +56,7 @@ void IRAM_ATTR AnalogSensor::freqIrq2() {
 #endif
 
 void AnalogSensor::start(const bool factory_settings) {
+    // add hardcoded sensors for BBQKees gateway boards
     if (factory_settings && EMSESP::system_.board_profile() == "E32V2_2") {
         EMSESP::webCustomizationService.update([&](WebCustomization & settings) {
             auto newSensor = AnalogCustomization();
@@ -896,9 +897,9 @@ std::string AnalogSensor::get_metrics_prometheus() {
         result += (std::string) "\n# TYPE emsesp_" + sensor.name() + " gauge\n";
         result += (std::string) "emsesp_" + sensor.name() + " ";
         if (sensor.type() != AnalogType::DIGITAL_OUT && sensor.type() != AnalogType::DIGITAL_IN) {
-            result += (std::string) Helpers::render_value(val, sensor.value(), 2) + "\n";
+            result += (std::string)Helpers::render_value(val, sensor.value(), 2) + "\n";
         } else {
-            result += (std::string) (sensor.value() == 0 ? "0\n" : "1\n");
+            result += (std::string)(sensor.value() == 0 ? "0\n" : "1\n");
         }
     }
     return result;

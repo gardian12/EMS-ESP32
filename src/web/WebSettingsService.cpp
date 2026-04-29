@@ -491,6 +491,8 @@ void WebSettings::set_board_profile(WebSettings & settings) {
         settings.board_profile = "S2MINI";
 #elif CONFIG_IDF_TARGET_ESP32S3
         settings.board_profile = "S32S3"; // BBQKees Gateway S3
+#elif CONFIG_IDF_TARGET_ESP32C6
+        settings.board_profile = "CUSTOM";
 #endif
         // apply the new board profile setting
         System::load_board_profile(data, settings.board_profile.c_str());
@@ -500,9 +502,9 @@ void WebSettings::set_board_profile(WebSettings & settings) {
 #ifndef EMSESP_STANDALONE
     uint32_t psram_size = ESP.getPsramSize() / 1024; // in KB
     if (psram_size > 0) {
-        EMSESP::logger().info("Loaded board profile %s, PSRAM: %lu KB", settings.board_profile.c_str(), psram_size);
+        EMSESP::logger().info("Loaded board profile %s (PSRAM: %lu KB)", settings.board_profile.c_str(), psram_size);
     } else {
-        EMSESP::logger().info("Loaded board profile %s, PSRAM: not available", settings.board_profile.c_str());
+        EMSESP::logger().info("Loaded board profile %s (PSRAM: not available)", settings.board_profile.c_str());
     }
 #endif
 

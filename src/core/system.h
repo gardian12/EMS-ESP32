@@ -83,7 +83,7 @@ enum FUSE_VALUE : uint8_t { ALL = 0, MFG = 1, MODEL = 2, BOARD = 3, REV = 4, BAT
 struct PartitionInfo {
     std::string version;
     size_t      size;
-    std::string install_date; // optional, only available if NTP is connected
+    time_t      install_date; // UTC epoch seconds; 0 if unknown. Format with localtime() at render time so it honors the current TZ.
 };
 
 class System {
@@ -156,8 +156,9 @@ class System {
     void    systemStatus(uint8_t status_code);
     uint8_t systemStatus();
 
-    static void extractSettings(const char * filename, const char * section, JsonObject output);
-    static bool saveSettings(const char * filename, const char * section, JsonObject input);
+    static void exportSettings(const std::string & type, const char * filename, JsonObject output);
+    static void exportSystemBackup(JsonObject output);
+    static bool saveSettings(const char * filename, JsonObject input);
 
     static bool                 add_gpio(uint8_t pin, const char * source_name);
     static std::vector<uint8_t> available_gpios();
